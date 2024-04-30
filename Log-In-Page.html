@@ -122,7 +122,7 @@
 
     .signup-text {
         position: absolute; /* Change to absolute positioning */
-        bottom: -90px; /* Adjust as needed */
+        bottom: -105px; /* Adjust as needed */
     }
     
     .signup:hover {
@@ -178,9 +178,7 @@
         <span class="login-text">Log In</span>
     </a>
 
-    <a href="#" id="signupButton" class="signup-text"> <!-- Change to anchor tag -->
-        <span class="signup">Don't have an Account? Sign up</span>
-    </a>
+    <p class="signup-text">Don't have an Account? <a href="#" id="signupButton" class="signup">Sign up</a></p> <!-- Change to anchor tag -->
 </div>
 
 <div class="footer">
@@ -207,26 +205,6 @@
         document.getElementById('loginButton').href = 'dashboardjobseeker.html';
         // Change the href of the signup button to Register-Page-Jobseeker.html
         document.getElementById('signupButton').href = 'Register-Page-Jobseeker.html';
-    });
-
-    // Add event listener to handle login box click
-    document.getElementById('loginButton').addEventListener('click', function(e) {
-        // Prevent default anchor behavior
-        e.preventDefault();
-        // Get the href attribute of the login button
-        var href = this.href;
-        // Redirect to the href
-        window.location.href = href;
-    });
-
-    // Add event listener to handle signup box click
-    document.getElementById('signupButton').addEventListener('click', function(e) {
-        // Prevent default anchor behavior
-        e.preventDefault();
-        // Get the href attribute of the signup button
-        var href = this.href;
-        // Redirect to the href
-        window.location.href = href;
     });
 </script>
 
