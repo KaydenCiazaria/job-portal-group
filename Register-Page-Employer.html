@@ -129,11 +129,10 @@
         text-decoration: underline;
     }
 
-    .login-button {
-        width: 100px;
-        margin-top: 0px;
+    .register-button {
+        width: 150px; /* Increase width for better visibility */
         height: 30px;
-        margin-right: auto;
+        margin-top: 20px; /* Adjust margin for spacing */
         background-color: #DDD7D7;
         color: white;
         text-align: center;
@@ -142,28 +141,22 @@
         position: relative;
     }
 
-    .login-button:hover {
+    .register-button:hover {
         background-color: #2980b9;
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
     }
 
-    .login-button .login-text {
+    .register-button .register-text {
         color: black;
         position: relative;
-        top: 24%;
+        top: 25%;
         transform: translateY(-50%);
     }
 
-    .box input[type="email"],
-    .box input[type="password"] {
-        width: calc(100% - 20px); /* Adjusted width */
-        padding: 10px; /* Increased padding */
-        border: none; /* Removed border */
-        border-radius: 5px; /* Added border radius */
-        background-color: #DDD7D7; /* Matched background color with respective boxes */
-        margin-top: 5px; /* Added margin */
-        box-sizing: border-box; /* Added to include padding and border in width calculation */
+    .input-text {
+        margin-right: 10px;
     }
+
 </style>
 </head>
 <body>
@@ -171,26 +164,17 @@
 <div class="content">
     <img src="C:\xampp\htdocs\SSWP_FinalProject\Photos\Joblook_logo.jpeg" alt="Logo" class="logo">
 
-    <div class="box" id="userTypeBox">
-        <div class="user-type" id="employer">Employer</div>
-        <div class="user-type" id="jobSeeker">Job Seeker</div>
-    </div>
+    <div class="box"></div>
 
-    <div class="box">
-        <span>Email Address:</span>
-        <input type="email" id="emailInput"> <!-- Email input -->
-    </div>
+    <div class="box"></div>
 
-    <div class="box">
-        <span>Password:</span>
-        <input type="password" id="passwordInput"> <!-- Password input -->
-    </div>
+    <div class="box"></div>
 
-    <a href="#" id="loginButton" class="login-button"> <!-- Change to anchor tag -->
-        <span class="login-text">Log In</span>
+    <a href="dashboard-employer.html" id="registerButton" class="register-button"> <!-- Change to anchor tag -->
+        <span class="register-text">Register Me</span>
     </a>
 
-    <p class="signup-text">Don't have an Account? <a href="Register-Page-Option.html" id="signupButton" class="signup">Sign up</a></p> <!-- Change to anchor tag -->
+    <p class="signup-text">Already have an account? <a href="Log-In-Page.html" id="loginButton" class="signup">Log In</a></p> <!-- Change to anchor tag -->
 </div>
 
 <div class="footer">
@@ -199,22 +183,6 @@
     <span>About Us</span>
     <span>Contact Us</span>
 </div>
-
-<script>
-    document.getElementById('employer').addEventListener('click', function() {
-        document.getElementById('employer').style.backgroundColor = '#ABF0FF';
-        document.getElementById('jobSeeker').style.backgroundColor = '#DDD7D7';
-        // Change the href of the login button to dashboardemployer.html
-        document.getElementById('loginButton').href = 'dashboardemployer.html';
-    });
-    
-    document.getElementById('jobSeeker').addEventListener('click', function() {
-        document.getElementById('jobSeeker').style.backgroundColor = '#ABF0FF';
-        document.getElementById('employer').style.backgroundColor = '#DDD7D7';
-        // Change the href of the login button to dashboardjobseeker.html
-        document.getElementById('loginButton').href = 'dashboardjobseeker.html';
-    });
-</script>
 
 </body>
 </html>
