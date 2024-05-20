@@ -18,7 +18,7 @@
     }
     .content {
         width: auto;
-        max-width: 300px;
+        max-width: 400px;
         background-color: white;
         padding: 25px;
         border-radius: 0px;
@@ -26,67 +26,35 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        position: relative; /* Added relative positioning */
-    }
-
-    .user-type {
-        width: 50%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-    }
-    
-    #employer {
-        background-color: #DDD7D7;
-    }
-    
-    #jobSeeker {
-        background-color: #DDD7D7;
+        position: relative;
     }
 
     .box {
         position: relative;
-        width: 300px;
-        height: 50px;
-        background-color: #DDD7D7;
+        width: 100%;
         margin-bottom: 20px;
-        border-radius: 5px;
         display: flex;
-        justify-content: center;
         align-items: center;
-        cursor: pointer; /* Make the box clickable */
     }
 
-    .user-type {
-        width: 50%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-    }
-    
-    #employer, #jobSeeker {
-        background-color: #DDD7D7;
-    }
-    
-    .user-type.active {
-        background-color: #2980b9; /* Background color changes to blue */
-        color: black; /* Text color remains black */
-    }
-    
     .box span {
-        position: absolute;
-        left: 0px;
-        top: -17px;
+        width: 25%;
         font-size: 12px;
     }
 
-    .box:last-child {
-        width: 100px;
-        margin-right: auto;
+    .box .input-group {
+        width: 75%;
+        display: flex;
+    }
+
+    .box .input-group input {
+        width: 50%;
+        margin-left: 10px;
+        border: 1px solid #DDD7D7;
+        background: #DDD7D7;
+        outline: none;
+        padding: 10px;
+        border-radius: 5px;
     }
 
     .logo {
@@ -117,12 +85,12 @@
     .signup {
         text-decoration: none;
         color: #3498db;
-        cursor: pointer; /* Make the signup text clickable */
+        cursor: pointer;
     }
 
     .signup-text {
-        position: absolute; /* Change to absolute positioning */
-        bottom: -105px; /* Adjust as needed */
+        position: absolute;
+        bottom: -90px;
     }
     
     .signup:hover {
@@ -130,9 +98,9 @@
     }
 
     .register-button {
-        width: 150px; /* Increase width for better visibility */
+        width: 150px;
         height: 30px;
-        margin-top: 20px; /* Adjust margin for spacing */
+        margin-top: 20px;
         background-color: #DDD7D7;
         color: white;
         text-align: center;
@@ -153,28 +121,53 @@
         transform: translateY(-50%);
     }
 
-    .input-text {
-        margin-right: 10px;
+    .box input[type="email"], .box input[type="password"] {
+        width: 66%; /* Adjust the width as needed */
+        margin-left: 10px;
+        border: 1px solid #DDD7D7;
+        background: #DDD7D7;
+        outline: none;
+        padding: 10px;
+        border-radius: 5px;
     }
-
 </style>
 </head>
 <body>
 
 <div class="content">
-    <img src="C:\xampp\htdocs\SSWP_FinalProject\Photos\Joblook_logo.jpeg" alt="Logo" class="logo">
+    <img src="Photos/Joblook_logo.jpeg" alt="Logo" class="logo">
 
-    <div class="box"></div>
+    <div class="box">
+        <span>Name:</span>
+        <div class="input-group">
+            <input type="text" placeholder="First Name">
+            <input type="text" placeholder="Last Name" style="margin-left: 10px;">
+        </div>
+    </div>
 
-    <div class="box"></div>
+    <div class="box">
+        <span>Phone:</span>
+        <div class="input-group">
+            <input type="text" placeholder="Country Code" style="width: 25%;">
+            <input type="text" placeholder="Phone Number" style="width: 65%; margin-left: 10px;">
+        </div>
+    </div>
 
-    <div class="box"></div>
+    <div class="box">
+        <span>Email:</span>
+        <input type="email" placeholder="Email">
+    </div>
 
-    <a href="dashboard-employer.html" id="registerButton" class="register-button"> <!-- Change to anchor tag -->
+    <div class="box">
+        <span>Password:</span>
+        <input type="password" placeholder="Password">
+    </div>
+
+    <a href="dashboard-employer.html" id="registerButton" class="register-button">
         <span class="register-text">Register Me</span>
     </a>
 
-    <p class="signup-text">Already have an account? <a href="Log-In-Page.html" id="loginButton" class="signup">Log In</a></p> <!-- Change to anchor tag -->
+    <p class="signup-text">Already have an account? <a href="Log-In-Page.html" id="loginButton" class="signup">Log In</a></p>
 </div>
 
 <div class="footer">
