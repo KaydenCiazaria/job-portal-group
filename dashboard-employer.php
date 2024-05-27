@@ -20,7 +20,7 @@
             display: flex;
             align-items: center;
             padding: 20px;
-            background-color: #f4f4f4;
+            background-color: #ffffff;
             border-bottom: 1px solid #ddd;
         }
         .header img {
@@ -29,17 +29,13 @@
         .header .nav {
             margin-left: auto;
         }
-        .header .nav form {
-            display: inline;
-        }
-        .header .nav button {
+        .header .nav a {
             margin-left: 10px;
             padding: 10px 20px;
-            border: none;
             background-color: #007bff;
             color: white;
-            cursor: pointer;
             border-radius: 5px;
+            text-decoration: none;
         }
         .content {
             padding: 20px;
@@ -130,11 +126,9 @@
     <div class="header">
         <img src="Photos/Joblook_logo(textOnly).jpeg" alt="Logo">
         <div class="nav">
-            <form method="POST" action="">
-                <button type="submit" name="home">Home</button>
-                <button type="submit" name="create_post">Create Post</button>
-                <button type="submit" name="logout">Log out</button>
-            </form>
+            <a href="home.php" class="btn btn-primary">Home</a>
+            <a href="Apply-Job-Post.php" class="btn btn-primary">Create Post</a>
+            <a href="Log-In-Page.html" class="btn btn-primary">Log out</a>
         </div>
     </div>
     <div class="content">
@@ -156,7 +150,7 @@
                     <a class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">Messages</a>
                     <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">Settings</a>
                 </div>
-                <button class="btn btn-primary create-more">Create More</button>
+                <a href="Apply-Job-Post.php" class="btn btn-primary create-more">Create More</a>
             </div>
             <div class="content-box two-thirds">
                 <h2>Current Applicants</h2>
