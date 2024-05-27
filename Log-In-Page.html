@@ -154,6 +154,16 @@
         transform: translateY(-50%);
     }
 
+    .box input[type="email"],
+    .box input[type="password"] {
+        width: calc(100% - 20px); /* Adjusted width */
+        padding: 10px; /* Increased padding */
+        border: none; /* Removed border */
+        border-radius: 5px; /* Added border radius */
+        background-color: #DDD7D7; /* Matched background color with respective boxes */
+        margin-top: 5px; /* Added margin */
+        box-sizing: border-box; /* Added to include padding and border in width calculation */
+    }
 </style>
 </head>
 <body>
@@ -168,17 +178,19 @@
 
     <div class="box">
         <span>Email Address:</span>
+        <input type="email" id="emailInput"> <!-- Email input -->
     </div>
 
     <div class="box">
         <span>Password:</span>
+        <input type="password" id="passwordInput"> <!-- Password input -->
     </div>
 
     <a href="#" id="loginButton" class="login-button"> <!-- Change to anchor tag -->
         <span class="login-text">Log In</span>
     </a>
 
-    <p class="signup-text">Don't have an Account? <a href="#" id="signupButton" class="signup">Sign up</a></p> <!-- Change to anchor tag -->
+    <p class="signup-text">Don't have an Account? <a href="Register-Page-Option.html" id="signupButton" class="signup">Sign up</a></p> <!-- Change to anchor tag -->
 </div>
 
 <div class="footer">
@@ -194,8 +206,6 @@
         document.getElementById('jobSeeker').style.backgroundColor = '#DDD7D7';
         // Change the href of the login button to dashboardemployer.html
         document.getElementById('loginButton').href = 'dashboardemployer.html';
-        // Change the href of the signup button to Register-Page-Employer.html
-        document.getElementById('signupButton').href = 'Register-Page-Employer.html';
     });
     
     document.getElementById('jobSeeker').addEventListener('click', function() {
@@ -203,6 +213,7 @@
         document.getElementById('employer').style.backgroundColor = '#DDD7D7';
         // Change the href of the login button to dashboardjobseeker.html
         document.getElementById('loginButton').href = 'dashboardjobseeker.html';
+      
         // Change the href of the signup button to Register-Page-Jobseeker.html
         document.getElementById('signupButton').href = 'Register-Page-Jobseeker.html';
     });
