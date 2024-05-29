@@ -42,6 +42,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
+            background: linear-gradient(to bottom, white, #C0E4EC);
         }
         .content-box {
             margin-bottom: 10px;
@@ -111,8 +112,8 @@
             background-color: white;
             color: black;
             text-align: center;
-            position: fixed;
-            bottom: 0;
+            /* position: fixed;  */
+            margin-top: auto;
             padding: 10px 20px;
         }
         .footer span {
@@ -123,51 +124,53 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <img src="Photos/Joblook_logo(textOnly).jpeg" alt="Logo">
-        <div class="nav">
-            <a href="home.php" class="btn btn-primary">Home</a>
-            <a href="Apply-Job-Post.php" class="btn btn-primary">Create Post</a>
-            <a href="Log-In-Page.html" class="btn btn-primary">Log out</a>
-        </div>
-    </div>
-    <div class="content">
-        <div class="content-box one">
-            <h2>Employer Profile</h2>
-            <div class="divider"></div>
-            <div class="profile-info">
-                <p><strong>Name:</strong> [Placeholder Name]</p>
-                <p><strong>Phone Number:</strong> [Placeholder Phone Number]</p>
-                <p><strong>Email:</strong> [Placeholder Email]</p>
+    <div class="page">
+        <div class="header">
+            <img src="Photos/Joblook_logo(textOnly).jpeg" alt="Logo">
+            <div class="nav">
+                <a href="home.php" class="btn btn-primary">Home</a>
+                <a href="Apply-Job-Post.php" class="btn btn-primary">Create Post</a>
+                <a href="Log-In-Page.html" class="btn btn-primary">Log out</a>
             </div>
         </div>
-        <div class="content-row">
-            <div class="content-box third title">
-                <h2>Active Job Post</h2>
-                <div class="list-group" id="list-tab" role="tablist">
-                    <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">Home</a>
-                    <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Profile</a>
-                    <a class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">Messages</a>
-                    <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">Settings</a>
-                </div>
-                <a href="Apply-Job-Post.php" class="btn btn-primary create-more">Create More</a>
-            </div>
-            <div class="content-box two-thirds">
-                <h2>Current Applicants</h2>
-                <div class="tab-content" id="nav-tabContent">
-                    <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">Home tab content</div>
-                    <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">Profile tab content</div>
-                    <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">Messages tab content</div>
-                    <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">Settings tab content</div>
+        <div class="content">
+            <div class="content-box one">
+                <h2>Employer Profile</h2>
+                <div class="divider"></div>
+                <div class="profile-info">
+                    <p><strong>Name:</strong> [Placeholder Name]</p>
+                    <p><strong>Phone Number:</strong> [Placeholder Phone Number]</p>
+                    <p><strong>Email:</strong> [Placeholder Email]</p>
                 </div>
             </div>
+            <div class="content-row">
+                <div class="content-box third title">
+                    <h2>Active Job Post</h2>
+                    <div class="list-group" id="list-tab" role="tablist">
+                        <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">Home</a>
+                        <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Profile</a>
+                        <a class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">Messages</a>
+                        <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">Settings</a>
+                    </div>
+                    <a href="Apply-Job-Post.php" class="btn btn-primary create-more">Create More</a>
+                </div>
+                <div class="content-box two-thirds">
+                    <h2>Current Applicants</h2>
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">Home tab content</div>
+                        <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">Profile tab content</div>
+                        <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">Messages tab content</div>
+                        <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">Settings tab content</div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="footer">
-        <span>Terms & Conditions</span>
-        <span>Privacy</span>
-        <span>About Us</span>
-        <span>Contact Us</span>
+        <div class="footer">
+            <span>Terms & Conditions</span>
+            <span>Privacy</span>
+            <span>About Us</span>
+            <span>Contact Us</span>
+        </div>
     </div>
 
     <!-- Bootstrap JS -->
