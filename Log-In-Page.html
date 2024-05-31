@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gradient Background with Sticky Bottom Bar</title>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <style>
     body {
         margin: 0;
@@ -16,9 +17,10 @@
         justify-content: center;
         align-items: center;
     }
+
     .content {
         width: auto;
-        max-width: 300px;
+        max-width: 400px;
         background-color: white;
         padding: 25px;
         border-radius: 0px;
@@ -26,7 +28,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        position: relative; /* Added relative positioning */
+        position: relative;
     }
 
     .user-type {
@@ -36,14 +38,6 @@
         justify-content: center;
         align-items: center;
         cursor: pointer;
-    }
-    
-    #employer {
-        background-color: #DDD7D7;
-    }
-    
-    #jobSeeker {
-        background-color: #DDD7D7;
     }
 
     .box {
@@ -52,11 +46,10 @@
         height: 50px;
         background-color: #DDD7D7;
         margin-bottom: 20px;
-        border-radius: 5px;
+        border-radius: 0px; /* Removed border-radius from .box */
         display: flex;
         justify-content: center;
         align-items: center;
-        cursor: pointer; /* Make the box clickable */
     }
 
     .user-type {
@@ -67,16 +60,16 @@
         align-items: center;
         cursor: pointer;
     }
-    
+
     #employer, #jobSeeker {
         background-color: #DDD7D7;
     }
-    
+
     .user-type.active {
-        background-color: #2980b9; /* Background color changes to blue */
-        color: black; /* Text color remains black */
+        background-color: #2980b9;
+        color: black;
     }
-    
+
     .box span {
         position: absolute;
         left: 0px;
@@ -117,14 +110,14 @@
     .signup {
         text-decoration: none;
         color: #3498db;
-        cursor: pointer; /* Make the signup text clickable */
+        cursor: pointer;
     }
 
     .signup-text {
-        position: absolute; /* Change to absolute positioning */
-        bottom: -105px; /* Adjust as needed */
+        position: absolute;
+        bottom: -105px;
     }
-    
+
     .signup:hover {
         text-decoration: underline;
     }
@@ -150,47 +143,96 @@
     .login-button .login-text {
         color: black;
         position: relative;
-        top: 24%;
+        top: 0%;
         transform: translateY(-50%);
     }
 
     .box input[type="email"],
     .box input[type="password"] {
-        width: calc(100% - 20px); /* Adjusted width */
-        padding: 10px; /* Increased padding */
-        border: none; /* Removed border */
-        border-radius: 5px; /* Added border radius */
-        background-color: #DDD7D7; /* Matched background color with respective boxes */
-        margin-top: 5px; /* Added margin */
-        box-sizing: border-box; /* Added to include padding and border in width calculation */
+        width: calc(100% - 20px);
+        padding: 5px;
+        border: none;
+        border-radius: 5px;
+        background-color: #DDD7D7;
+        box-sizing: border-box;
+    }
+
+    .radio-buttons {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    input[type="radio"] {
+        display: none;
+    }
+
+    input[type="radio"]:checked + label {
+        background-color: #ABF0FF;
+    }
+
+    label {
+        width: 50%;
+        text-align: center;
+        padding: 15px 10px;
+        border-radius: 0; /* Remove general border-radius */
+        cursor: pointer;
+        background-color: #DDD7D7;
+        margin-bottom: 0; /* Remove margin */
+    }
+
+    /* Add specific border-radius for individual labels */
+    #employer + label {
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+    }
+
+    #jobSeeker + label {
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+    .error-message {
+        color: red;
+        margin-bottom: 10px;
     }
 </style>
 </head>
 <body>
 
 <div class="content">
-    <img src="C:\xampp\htdocs\SSWP_FinalProject\Photos\Joblook_logo.jpeg" alt="Logo" class="logo">
+    <img src="Photos/Joblook_logo.jpeg" alt="Logo" class="logo">
 
-    <div class="box" id="userTypeBox">
-        <div class="user-type" id="employer">Employer</div>
-        <div class="user-type" id="jobSeeker">Job Seeker</div>
-    </div>
+    <?php if (isset($_GET['error']) && $_GET['error'] == 'invalid_credentials'): ?>
+        <div class="error-message">Invalid email or password. Please try again.</div>
+    <?php endif; ?>
 
-    <div class="box">
-        <span>Email Address:</span>
-        <input type="email" id="emailInput"> <!-- Email input -->
-    </div>
+    <form action="process_login.php" method="post">
+        <div class="box">
+            <div class="radio-buttons">
+                <input type="radio" id="employer" name="userType" value="employer" required>
+                <label for="employer">Employer</label>
+                <input type="radio" id="jobSeeker" name="userType" value="jobSeeker" required>
+                <label for="jobSeeker">Job Seeker</label>
+            </div>
+        </div>
 
-    <div class="box">
-        <span>Password:</span>
-        <input type="password" id="passwordInput"> <!-- Password input -->
-    </div>
+        <div class="box">
+            <span>Email Address:</span>
+            <input type="email" id="emailInput" name="email" required>
+        </div>
 
-    <a href="#" id="loginButton" class="login-button"> <!-- Change to anchor tag -->
-        <span class="login-text">Log In</span>
-    </a>
+        <div class="box">
+            <span>Password:</span>
+            <input type="password" id="passwordInput" name="password" required>
+        </div>
 
-    <p class="signup-text">Don't have an Account? <a href="Register-Page-Option.html" id="signupButton" class="signup">Sign up</a></p> <!-- Change to anchor tag -->
+        <button type="submit" class="login-button">
+            <span class="login-text">Log In</span>
+        </button>
+    </form>
+
+    <p class="signup-text">Don't have an Account? <a href="Register-Page-Option.html" id="signupButton" class="signup">Sign up</a></p>
 </div>
 
 <div class="footer">
@@ -199,25 +241,6 @@
     <span>About Us</span>
     <span>Contact Us</span>
 </div>
-
-<script>
-    document.getElementById('employer').addEventListener('click', function() {
-        document.getElementById('employer').style.backgroundColor = '#ABF0FF';
-        document.getElementById('jobSeeker').style.backgroundColor = '#DDD7D7';
-        // Change the href of the login button to dashboardemployer.html
-        document.getElementById('loginButton').href = 'dashboardemployer.html';
-    });
-    
-    document.getElementById('jobSeeker').addEventListener('click', function() {
-        document.getElementById('jobSeeker').style.backgroundColor = '#ABF0FF';
-        document.getElementById('employer').style.backgroundColor = '#DDD7D7';
-        // Change the href of the login button to dashboardjobseeker.html
-        document.getElementById('loginButton').href = 'dashboardjobseeker.html';
-      
-        // Change the href of the signup button to Register-Page-Jobseeker.html
-        document.getElementById('signupButton').href = 'Register-Page-Jobseeker.html';
-    });
-</script>
 
 </body>
 </html>
