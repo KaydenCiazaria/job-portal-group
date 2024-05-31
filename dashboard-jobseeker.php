@@ -118,6 +118,8 @@
         }
 
         .list {
+            display: flex;
+            flex-direction: column;
             width: 90%;
             height: 100%;
         }
@@ -149,11 +151,13 @@
         }
 
         .job-content {
+            flex: 1;            
             height:50px;
 background-color: blue;
         }
 
         .title {
+            text-align: center;
             height:50px;
 
 background-color: grey;
@@ -227,7 +231,9 @@ background-color: grey;
             </div>
             <div class="right">
                 <div class="list box" id="jobpending-container">
-                    <div class="title"></div>
+                    <div class="title">
+                        <h1>Pending(?)</h1>
+                    </div>
                     <div class="job-content">
                         <ul class="list-content">
                             <li class="list-group-item">Cras justo odio</li>
@@ -236,7 +242,9 @@ background-color: grey;
                             <li class="list-group-item">Dapibus ac facilisis in</li>
                         </ul>
                     </div>
-                    <div class="title"></div>
+                    <div class="title">
+                        <h1>Accepted(?)</h1>  
+                    </div>
                     <div class="job-content"></div>
                     <div class="action-button">
                         <button class="btn btn-primary">Search for more</button>
