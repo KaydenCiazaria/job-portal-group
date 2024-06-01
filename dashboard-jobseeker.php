@@ -14,6 +14,7 @@
             position: relative;
             padding: 20px;
             font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, white, #C0E4EC);
         }
 
         .header {
@@ -41,10 +42,10 @@
             text-decoration: none;
         }
 
-        .box {
+        /* .box {
             background-color: red;
             border: 5px solid black;
-        }
+        } */
 
         .page {
             height: 100vh;
@@ -56,20 +57,32 @@
             justify-content: space-between;
         }
 
+        .content-box {
+            margin-bottom: 10px;
+            padding: 20px; /* Adjust padding for content box */
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .content-box-right {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
         .left {
             width: 60%;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            gap: 1em;
         }
 
         .right {
             width: 40%;
-
         }
 
         .profile {
-            height: 250px;
+            flex: 1;
             width: 80%;
             text-align: center;
         }
@@ -117,6 +130,15 @@
             height: 100%
         }
 
+        div.scroll {
+            margin: 4px, 4px;
+            padding: 4px;
+            overflow-x: hidden;
+            /* to create scrolling vertically */
+            overflow-y: auto;
+            text-align: left;
+        }
+
         .list {
             display: flex;
             flex-direction: column;
@@ -145,23 +167,24 @@
         }
 
         .action-button {
-            margin-top: 10px;
             display: flex;
             justify-content: center;
+            align-items: center;
         }
 
         .job-content {
-            flex: 1;            
-            height:50px;
-background-color: blue;
+            flex: 1;
+            height: 50px;
         }
 
         .title {
             text-align: center;
-            height:50px;
+            height: 50px;
+            background-color: lightblue;
+            border-radius: 5px;
 
-background-color: grey;
         }
+
         .footer {
             display: flex;
             justify-content: flex-start;
@@ -169,9 +192,7 @@ background-color: grey;
             background-color: white;
             color: black;
             text-align: center;
-            /* position: fixed;  */
             margin-top: auto;
-            /* position:bottom; */
             padding: 10px 20px;
         }
 
@@ -196,7 +217,7 @@ background-color: grey;
         <div class="content">
 
             <div class="left">
-                <div class="profile box">
+                <div class="profile content-box">
                     <h1>Profile</h1>
                     <div class="job-title">John Doe</div>
                     <div class="job-desc-1">Position: Senior Developer</div>
@@ -204,7 +225,7 @@ background-color: grey;
                     <div class="job-desc-3">Location: Jakarta</div>
                 </div>
 
-                <div class="profile job-suggestion box">
+                <div class="profile job-suggestion content-box">
                     <div class="suggest-content">
                         <ul class="list-group list-group-horizontal-md">
                             <li class="list-group-item ">
@@ -230,23 +251,70 @@ background-color: grey;
                 </div>
             </div>
             <div class="right">
-                <div class="list box" id="jobpending-container">
+                <div class="content-box-right list content-box-r" id="jobpending-container">
                     <div class="title">
                         <h1>Pending(?)</h1>
                     </div>
-                    <div class="job-content">
-                        <ul class="list-content">
-                            <li class="list-group-item">Cras justo odio</li>
-                            <li class="list-group-item">Dapibus ac facilisis in</li>
-                            <li class="list-group-item">Dapibus ac facilisis in</li>
-                            <li class="list-group-item">Dapibus ac facilisis in</li>
-                        </ul>
+                    <div class="job-content scroll">
+                        <ol class="list-group list-group-flush">
+                            <a href="">
+                                <li class="list-group-item d-flex ">
+                                    <div class=" me-auto">
+                                        <div class="fw-bold">Job description 1</div>
+                                        More information
+                                    </div>
+                                </li>
+                            </a>
+                            <a href="">
+                                <li class="list-group-item d-flex ">
+                                    <div class=" me-auto">
+                                        <div class="fw-bold">Job description 2</div>
+                                        More information
+                                    </div>
+                                </li>
+                            </a>
+                            <a href="">
+                                <li class="list-group-item d-flex ">
+                                    <div class=" me-auto">
+                                        <div class="fw-bold">Job description 3</div>
+                                        More information
+                                    </div>
+                                </li>
+                            </a>
+                        </ol>
                     </div>
                     <div class="title">
-                        <h1>Accepted(?)</h1>  
+                        <h1>Accepted(?)</h1>
                     </div>
-                    <div class="job-content"></div>
-                    <div class="action-button">
+                    <div class="job-content scroll">
+                        <ol class="list-group list-group-flush">
+                            <a href="">
+                                <li class="list-group-item d-flex ">
+                                    <div class=" me-auto">
+                                        <div class="fw-bold">Job description 1</div>
+                                        More information
+                                    </div>
+                                </li>
+                            </a>
+                            <a href="">
+                                <li class="list-group-item d-flex ">
+                                    <div class=" me-auto">
+                                        <div class="fw-bold">Job description 2</div>
+                                        More information
+                                    </div>
+                                </li>
+                            </a>
+                            <a href="">
+                                <li class="list-group-item d-flex ">
+                                    <div class=" me-auto">
+                                        <div class="fw-bold">Job description 3</div>
+                                        More information
+                                    </div>
+                                </li>
+                            </a>
+                        </ol>
+                    </div>
+                    <div class="title action-button">
                         <button class="btn btn-primary">Search for more</button>
                     </div>
                 </div>
