@@ -2,10 +2,34 @@
 include_once('config.php');
 session_name('employer_session');
 session_start();
+
+// Placeholder for fetching active job posts and applicants from the database
+// Replace this with actual database queries
+$activeJobPosts = [
+    ['id' => 1, 'title' => 'Software Engineer', 'location' => 'Jakarta'],
+    ['id' => 2, 'title' => 'Marketing Specialist', 'location' => 'Bandung'],
+    ['id' => 3, 'title' => 'Data Analyst', 'location' => 'Surabaya'],
+];
+
+$applicants = [
+    1 => [
+        ['name' => 'Kinder Mary', 'university' => 'UBM', 'degree' => 'S1 - Komunikasi', 'age' => 26, 'email' => 'kindermary16@gmail.com', 'phone' => '+62 813 2564 8974'],
+        ['name' => 'John Doe', 'university' => 'UI', 'degree' => 'S1 - Informatika', 'age' => 24, 'email' => 'johndoe@example.com', 'phone' => '+62 812 3456 7890'],
+        ['name' => 'Bryant Effendi', 'university' => 'UBM', 'degree' => 'S1 - Informatika', 'age' => 22, 'email' => 'bryanteffendi@example.com', 'phone' => '+62 811 1689 3549'],
+        ['name' => 'Bryant Effendi', 'university' => 'UBM', 'degree' => 'S1 - Informatika', 'age' => 22, 'email' => 'bryanteffendi@example.com', 'phone' => '+62 811 1689 3549']
+    ],
+    2 => [
+        ['name' => 'Jane Smith', 'university' => 'ITB', 'degree' => 'S2 - Marketing', 'age' => 27, 'email' => 'janesmith@example.com', 'phone' => '+62 811 2345 6789']
+    ],
+    3 => [
+        ['name' => 'Alice Brown', 'university' => 'UGM', 'degree' => 'S1 - Statistik', 'age' => 25, 'email' => 'alicebrown@example.com', 'phone' => '+62 812 5678 9012']
+    ],
+];
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,20 +45,25 @@ session_start();
             height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
+
         .header {
             display: flex;
             align-items: center;
-            padding: 20px;
+            padding: 10px 20px;
             background-color: #ffffff;
             border-bottom: 1px solid #ddd;
         }
+
         .header img {
             max-height: 50px;
         }
+
         .header .nav {
             margin-left: auto;
         }
+
         .header .nav a {
             margin-left: 10px;
             padding: 10px 20px;
@@ -43,73 +72,95 @@ session_start();
             border-radius: 5px;
             text-decoration: none;
         }
+
         .content {
             padding: 20px;
             flex: 1;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
+
         .content-box {
             margin-bottom: 10px;
-            padding: 20px; /* Adjust padding for content box */
+            padding: 20px;
             background-color: white;
             border: 1px solid #ddd;
             border-radius: 5px;
         }
+
         .content-box.one {
             display: flex;
             align-items: center;
         }
+
         .content-box.one h2 {
-            padding-left: 20px; /* Add padding on the left */
-            padding-right: 20px; /* Add padding on the right */
+            padding-left: 20px;
+            padding-right: 20px;
         }
+
         .content-box.one .profile-info {
             margin-left: 20px;
         }
+
         .content-box.one .profile-info p {
             margin: 5px 0;
         }
+
         .divider {
             width: 1px;
             height: 100%;
             background-color: #ddd;
             margin: 0 20px;
         }
+
         .content-row {
             display: flex;
             justify-content: space-between;
+            flex: 1;
         }
+
         .content-box.third {
             display: flex;
             flex-direction: column;
-            align-items: center; /* Align items horizontally centered */
-            justify-content: center; /* Align content vertically centered */
             width: 32%;
-            margin-right: 2%;
-            height: 370px;
-            position: relative; /* Set position to relative */
+            max-height: 380px;
+            overflow-y: auto;
         }
-        .content-box.two-thirds {
-            width: 66%; /* Adjust the width of the two-thirds content box */
-            height: 370px;
-        }
-        .content-box.two-thirds h2 {
-            position: relative; /* Set position to relative */
-            top: -20px; /* Adjust the top position */
-            padding-top: 10px; /* Adjust the padding to move the text "Active Job Post" up */
-        }
+
         .list-group {
-            width: 100%; /* Adjust the width of the menu tab */
-            height: 80%; /* Adjust the height of the menu tab */
-            overflow-y: auto; /* Add scroll if content exceeds height */
+            width: 100%;
         }
+
         .create-more {
-            position: absolute;
-            bottom: 10px; /* Adjust the distance from the bottom */
-            left: 50%; /* Center the button horizontally */
-            transform: translateX(-50%); /* Center the button horizontally */
+            margin-top: 10px;
+            text-align: center;
         }
+
+        .content-box.two-thirds {
+            width: 66%;
+            display: flex;
+            flex-direction: column;
+            max-height: 380px;
+            overflow-y: auto;
+        }
+
+        .applicants-container {
+            display: flex;
+            flex-wrap: wrap;
+            overflow-x: scroll;
+            overflow: hidden;
+        }
+
+        .applicant-box {
+            width: 48%;
+            margin: 1%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
         .footer {
             display: flex;
             justify-content: flex-start;
@@ -121,6 +172,7 @@ session_start();
             bottom: 0;
             padding: 10px 20px;
         }
+
         .footer span {
             margin-left: 10px;
             margin-right: 15px;
@@ -128,13 +180,14 @@ session_start();
         }
     </style>
 </head>
+
 <body>
     <div class="header">
         <img src="Photos/Joblook_logo(textOnly).jpeg" alt="Logo">
         <div class="nav">
-            <a href="home.php" class="btn btn-primary">Home</a>
-            <a href="Apply-Job-Post.php" class="btn btn-primary">Create Post</a>
-            <a href="Log-In-Page.html" class="btn btn-primary">Log out</a>
+            <a href="dashboard-employer.php" class="btn btn-primary">Home</a>
+            <a href="Create-job-post-page.php" class="btn btn-primary">Create Post</a>
+            <a href="Log-In-Page.php" class="btn btn-primary">Log out</a>
         </div>
     </div>
     <div class="content">
@@ -142,30 +195,44 @@ session_start();
             <h2>Employer Profile</h2>
             <div class="divider"></div>
             <div class="profile-info">
-                <p><strong>Name:</strong><?php echo $_SESSION['fullname']?></p>
-                <p><strong>Phone Number:</strong><?php echo $_SESSION['phonenumber'] ?></p>
-                <p><strong>Email:</strong><?php echo $_SESSION['email'] ?></p>
+                <p><strong>Name:</strong> <?php echo $_SESSION['fullname'] ?></p>
+                <p><strong>Phone Number:</strong> <?php echo $_SESSION['phonenumber'] ?></p>
+                <p><strong>Email:</strong> <?php echo $_SESSION['email'] ?></p>
             </div>
         </div>
         <div class="content-row">
             <div class="content-box third title">
-                <h2>Active Job Post</h2>
+                <h2>Active Job Posts</h2>
                 <div class="list-group" id="list-tab" role="tablist">
-                    <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">Job post 1</a>
-                    <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Job post 2</a>
-                    <a class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">Job post 3</a>
-                    <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">Job post 4</a>
+                    <?php foreach ($activeJobPosts as $job): ?>
+                        <a class="list-group-item list-group-item-action" id="job-<?php echo $job['id']; ?>-list" data-toggle="list" href="#job-<?php echo $job['id']; ?>" role="tab" aria-controls="job-<?php echo $job['id']; ?>"><?php echo $job['title']; ?></a>
+                    <?php endforeach; ?>
                 </div>
                 <a href="Apply-Job-Post.php" class="btn btn-primary create-more">Create More</a>
             </div>
             <div class="content-box two-thirds">
                 <h2>Current Applicants</h2>
                 <div class="tab-content" id="nav-tabContent">
-                    <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">Home tab content</div> 
-                    <!-- fetch from database using job post id : SELECT job_post_id FROM CreateJobpost WHERE employer_id =.... and then SELECT jobname,job_type,salary,age,gender FROM jobpost WHERE jobpost_id= ...AND isactive= TRUE -->
-                    <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">Profile tab content</div>
-                    <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">Messages tab content</div>
-                    <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">Settings tab content</div>
+                    <?php foreach ($activeJobPosts as $job): ?>
+                        <div class="tab-pane fade" id="job-<?php echo $job['id']; ?>" role="tabpanel" aria-labelledby="job-<?php echo $job['id']; ?>-list">
+                            <?php if (!empty($applicants[$job['id']])): ?>
+                                <div class="applicants-container">
+                                    <?php foreach ($applicants[$job['id']] as $applicant): ?>
+                                        <div class="applicant-box">
+                                            <p><strong>Name:</strong> <?php echo $applicant['name']; ?></p>
+                                            <p><strong>University:</strong> <?php echo $applicant['university']; ?></p>
+                                            <p><strong>Degree, Major:</strong> <?php echo $applicant['degree']; ?></p>
+                                            <p><strong>Age:</strong> <?php echo $applicant['age']; ?></p>
+                                            <p><strong>Email:</strong> <?php echo $applicant['email']; ?></p>
+                                            <p><strong>Phone Number:</strong> <?php echo $applicant['phone']; ?></p>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php else: ?>
+                                <p>No applicants for this job post yet.</p>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </div>
@@ -181,4 +248,5 @@ session_start();
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
