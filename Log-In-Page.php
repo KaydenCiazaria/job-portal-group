@@ -236,7 +236,7 @@ include_once('config.php');
         </button>
     </form>
 
-    <p class="signup-text">Don't have an Account? <a href="Register-Page-Option.html" id="signupButton" class="signup">Sign up</a></p>
+    <p class="signup-text">Don't have an Account? <a href="Register-Page-Option.php" id="signupButton" class="signup">Sign up</a></p>
 </div>
 
 <div class="footer">
