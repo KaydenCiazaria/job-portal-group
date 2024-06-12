@@ -1,3 +1,8 @@
+<?php
+include_once('config.php');
+session_name('jobseeker_session');
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -219,7 +224,7 @@
             <div class="left">
                 <div class="profile content-box">
                     <h1>Profile</h1>
-                    <div class="job-title">John Doe</div>
+                    <div class="job-title"><?php echo $_SESSION['fullname']; ?></div>
                     <div class="job-desc-1">Position: Senior Developer</div>
                     <div class="job-desc-2">Wage Range: 15jt - 20jt</div>
                     <div class="job-desc-3">Location: Jakarta</div>
