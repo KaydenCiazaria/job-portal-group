@@ -106,7 +106,7 @@
         document.getElementById('employer').classList.add('active');
         document.getElementById('jobSeeker').classList.remove('active');
         // Change the href of the register button to registrationemployer.html
-        document.getElementById('registerButton').href = 'Register-Page-Employer.html';
+        document.getElementById('registerButton').href = 'Register-Page-Employer.php';
     });
     
     document.getElementById('jobSeeker').addEventListener('click', function() {
