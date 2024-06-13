@@ -3,28 +3,42 @@ include_once('config.php');
 session_name('employer_session');
 session_start();
 
-// Placeholder for fetching active job posts and applicants from the database
-// Replace this with actual database queries
-$activeJobPosts = [
-    ['id' => 1, 'title' => 'Software Engineer', 'location' => 'Jakarta'],
-    ['id' => 2, 'title' => 'Marketing Specialist', 'location' => 'Bandung'],
-    ['id' => 3, 'title' => 'Data Analyst', 'location' => 'Surabaya'],
-];
+// Fetch employer_id using employer_email from session
+$employer_email = $_SESSION['email'];
+$employer_query = "SELECT employer_id FROM employer WHERE employer_email = '$employer_email'";
+$employer_result = $conn->query($employer_query);
+$employer = $employer_result->fetch_assoc();
+$employer_id = $employer['employer_id'];
 
-$applicants = [
-    1 => [
-        ['name' => 'Kinder Mary', 'university' => 'UBM', 'degree' => 'S1 - Komunikasi', 'age' => 26, 'email' => 'kindermary16@gmail.com', 'phone' => '+62 813 2564 8974'],
-        ['name' => 'John Doe', 'university' => 'UI', 'degree' => 'S1 - Informatika', 'age' => 24, 'email' => 'johndoe@example.com', 'phone' => '+62 812 3456 7890'],
-        ['name' => 'Bryant Effendi', 'university' => 'UBM', 'degree' => 'S1 - Informatika', 'age' => 22, 'email' => 'bryanteffendi@example.com', 'phone' => '+62 811 1689 3549'],
-        ['name' => 'Bryant Effendi', 'university' => 'UBM', 'degree' => 'S1 - Informatika', 'age' => 22, 'email' => 'bryanteffendi@example.com', 'phone' => '+62 811 1689 3549']
-    ],
-    2 => [
-        ['name' => 'Jane Smith', 'university' => 'ITB', 'degree' => 'S2 - Marketing', 'age' => 27, 'email' => 'janesmith@example.com', 'phone' => '+62 811 2345 6789']
-    ],
-    3 => [
-        ['name' => 'Alice Brown', 'university' => 'UGM', 'degree' => 'S1 - Statistik', 'age' => 25, 'email' => 'alicebrown@example.com', 'phone' => '+62 812 5678 9012']
-    ],
-];
+// Fetch job posts created by the employer and their details from job_post table
+$jobposts_query = "
+    SELECT cj.jobpost_id, jp.job_name, jp.salary_wage, jp.age 
+    FROM create_jobpost cj 
+    JOIN job_post jp ON cj.jobpost_id = jp.jobpost_id 
+    WHERE cj.employer_id = '$employer_id'";
+$jobposts_result = $conn->query($jobposts_query);
+$activeJobPosts = [];
+while ($job = $jobposts_result->fetch_assoc()) {
+    $activeJobPosts[] = $job;
+}
+
+// Fetch applicants for each job post
+$applicants = [];
+foreach ($activeJobPosts as $job) {
+    $jobpost_id = $job['jobpost_id'];
+    $applicants_query = "
+        SELECT a.jobseeker_id, a.essay, j.jobseeker_fullname, j.jobseeker_university, j.jobseeker_degree, j.jobseeker_major, j.jobseeker_birthday, j.jobseeker_email, j.jobseeker_countrycode, j.jobseeker_phonenumber 
+        FROM apply_job a
+        JOIN jobseeker j ON a.jobseeker_id = j.jobseeker_id
+        WHERE a.jobpost_id = '$jobpost_id'";
+    $applicants_result = $conn->query($applicants_query);
+    while ($applicant = $applicants_result->fetch_assoc()) {
+        $applicants[$jobpost_id][] = $applicant;
+    }
+}
+
+// Close the connection
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -205,7 +219,11 @@ $applicants = [
                 <h2>Active Job Posts</h2>
                 <div class="list-group" id="list-tab" role="tablist">
                     <?php foreach ($activeJobPosts as $job): ?>
-                        <a class="list-group-item list-group-item-action" id="job-<?php echo $job['id']; ?>-list" data-toggle="list" href="#job-<?php echo $job['id']; ?>" role="tab" aria-controls="job-<?php echo $job['id']; ?>"><?php echo $job['title']; ?></a>
+                        <a class="list-group-item list-group-item-action" id="job-<?php echo $job['jobpost_id']; ?>-list" data-toggle="list" href="#job-<?php echo $job['jobpost_id']; ?>" role="tab" aria-controls="job-<?php echo $job['jobpost_id']; ?>">
+                            <strong style="font-size: larger;"><?php echo $job['job_name']; ?></strong><br>
+                            <span>Salary: <?php echo $job['salary_wage']; ?></span><br>
+                            <span>Age: <?php echo $job['age']; ?></span>
+                        </a>
                     <?php endforeach; ?>
                 </div>
                 <a href="Apply-Job-Post.php" class="btn btn-primary create-more">Create More</a>
@@ -214,17 +232,19 @@ $applicants = [
                 <h2>Current Applicants</h2>
                 <div class="tab-content" id="nav-tabContent">
                     <?php foreach ($activeJobPosts as $job): ?>
-                        <div class="tab-pane fade" id="job-<?php echo $job['id']; ?>" role="tabpanel" aria-labelledby="job-<?php echo $job['id']; ?>-list">
-                            <?php if (!empty($applicants[$job['id']])): ?>
+                        <div class="tab-pane fade" id="job-<?php echo $job['jobpost_id']; ?>" role="tabpanel" aria-labelledby="job-<?php echo $job['jobpost_id']; ?>-list">
+                            <?php if (!empty($applicants[$job['jobpost_id']])): ?>
                                 <div class="applicants-container">
-                                    <?php foreach ($applicants[$job['id']] as $applicant): ?>
+                                    <?php foreach ($applicants[$job['jobpost_id']] as $applicant): ?>
                                         <div class="applicant-box">
-                                            <p><strong>Name:</strong> <?php echo $applicant['name']; ?></p>
-                                            <p><strong>University:</strong> <?php echo $applicant['university']; ?></p>
-                                            <p><strong>Degree, Major:</strong> <?php echo $applicant['degree']; ?></p>
-                                            <p><strong>Age:</strong> <?php echo $applicant['age']; ?></p>
-                                            <p><strong>Email:</strong> <?php echo $applicant['email']; ?></p>
-                                            <p><strong>Phone Number:</strong> <?php echo $applicant['phone']; ?></p>
+                                            <p><strong>Name:</strong> <?php echo $applicant['jobseeker_fullname']; ?></p>
+                                            <p><strong>University:</strong> <?php echo $applicant['jobseeker_university']; ?></p>
+                                            <p><strong>Degree, Major:</strong> <?php echo $applicant['jobseeker_degree']; ?> - <?php echo $applicant['jobseeker_major']; ?></p>
+                                            <p><strong>Age:</strong> <?php echo $applicant['jobseeker_birthday']; ?></p>
+                                            <p><strong>Email:</strong> <?php echo $applicant['jobseeker_email']; ?></p>
+                                            <p><strong>Phone Number:</strong> <?php echo $applicant['jobseeker_countrycode'] . ' ' . $applicant['jobseeker_phonenumber']; ?></p>
+                                            <a href="view-essay-page.php" class="btn btn-primary">See Essay</a>
+                                            <a href="#" class="btn btn-success ml-2">I'm Interested</a>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
