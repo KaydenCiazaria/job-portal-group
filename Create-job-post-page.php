@@ -1,4 +1,6 @@
 <?php
+session_name('employer_session');
+session_start();
 include_once('config.php');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
@@ -9,8 +11,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     $gender = isset($_POST['gender']) ? $_POST['gender'] : '';
     $company_logo_path = isset($_FILES['company_logo']['name']) ? $_FILES['company_logo']['name'] : '';
     $isactive = true;
+    $email = "bryanteffendi1234@gmail.com"; // revise this to become $email =$_session['email'], this is temporrary
 
-    // Insert data into the database
     $sql = "INSERT INTO job_post (job_name, job_type, salary_wage, age, gender, company_logo, is_active) 
             VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -19,6 +21,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
 
         if ($stmt->execute()) {
             echo "New job post created successfully.";
+            
+            $fetchem_query = $conn->prepare("SELECT employer_id FROM employer WHERE employer_email=?");
+            $fetchem_query->bind_param("s", $email); 
+            $fetchem_query->execute();
+            $fetchem_query = $fetchem_query->get_result();
+
+            
+            if ($fetchem_query->num_rows > 0) {
+                while ($row = $fetchem_query->fetch_assoc()) {
+                    $employer_id = isset($row['employer_id']) ? $row['employer_id'] : null;
+
+                    if ($employer_id) {
+                        $fetchjo_query = $conn->prepare("SELECT jobpost_id FROM job_post WHERE job_type=?");
+                        $fetchjo_query->bind_param("i", $job_type); 
+                        $fetchjo_query->execute();
+                        $fetchjo_query = $fetchjo_query->get_result();
+
+                        if ($fetchjo_query->num_rows > 0) {
+                            while ($job_row = $fetchjo_query->fetch_assoc()) {
+                                $jobpost_id = isset($job_row['jobpost_id']) ? $job_row['jobpost_id'] : null;
+
+                                if ($jobpost_id) {
+                                    $insertquery = $conn->prepare("INSERT INTO create_jobpost (jobpost_id, employer_id, job_desc) VALUES (?, ?, ?)");
+                                    $insertquery->bind_param("iis", $jobpost_id, $employer_id, $job_type); 
+                                    $insertquery->execute();
+                                }
+                            } 
+                        } else {
+                            echo "No job posts found for this employer.";
+                        }
+                    } else {
+                        echo "No employer found with this email.";
+                    }
+                }
+            } else {
+                echo "No employer found with this email.";
+            }
         } else {
             echo "Error: " . $stmt->error;
         }
@@ -31,6 +70,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     $conn->close();
 }
 ?>
+
+
 
 
 
