@@ -2,6 +2,61 @@
 include_once('config.php');
 session_name('jobseeker_session');
 session_start();
+
+// Prepare and execute the SQL query
+$jobseeker_email = $_SESSION['email'];
+$jobseeker_query = "SELECT jobseeker_id FROM jobseeker WHERE jobseeker_email = ?";
+if ($stmt = $conn->prepare($jobseeker_query)) {
+    $stmt->bind_param("s", $jobseeker_email);
+    $stmt->execute();
+    $stmt->bind_result($jobseeker_id);
+    $stmt->fetch();
+    $stmt->close();
+}
+
+$stmt = $conn->prepare(
+    "SELECT aj.jobpost_id, aj.jobseeker_id, jp.job_name, jp.salary_wage, aj.is_pending, aj.is_accepted, aj.is_rejected 
+     FROM apply_job aj
+     INNER JOIN job_post jp ON aj.jobpost_id = jp.jobpost_id
+     WHERE aj.jobseeker_id = ?"
+);
+$stmt->bind_param("i", $jobseeker_id);
+
+$stmt->execute();
+$stmt->store_result();
+
+// Check if any rows were returned
+if ($stmt->num_rows > 0) {
+    // Bind results to variables
+    $stmt->bind_result($jobpost_id, $jobseeker_id, $job_name, $salary_wage, $is_pending, $is_accepted, $is_rejected);
+
+    // Arrays to hold jobs based on status
+    $accepted_jobs = [];
+    $pending_jobs = [];
+
+    while ($stmt->fetch()) {
+        // Depending on the status, add job to appropriate array
+        if ($is_accepted == 1) {
+            $accepted_jobs[] = array(
+                'jobpost_id' => $jobpost_id,
+                'jobseeker_id' => $jobseeker_id,
+                'job_name' => $job_name,
+                'job_wage' => $salary_wage
+            );
+        } elseif ($is_pending == 1 && $is_rejected == 0) {
+            $pending_jobs[] = array(
+                'jobpost_id' => $jobpost_id,
+                'jobseeker_id' => $jobseeker_id,
+                'job_name' => $job_name,
+                'job_wage' => $salary_wage
+            );
+        } else {
+            echo "No jobs available.";
+        }
+    }
+}
+$stmt->close();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -64,7 +119,8 @@ session_start();
 
         .content-box {
             margin-bottom: 10px;
-            padding: 20px; /* Adjust padding for content box */
+            padding: 20px;
+            /* Adjust padding for content box */
             background-color: white;
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -75,6 +131,7 @@ session_start();
             border: 1px solid #ddd;
             border-radius: 5px;
         }
+
         .left {
             width: 60%;
             display: flex;
@@ -225,9 +282,9 @@ session_start();
                 <div class="profile content-box">
                     <h1>Profile</h1>
                     <div class="job-title"><?php echo $_SESSION['fullname']; ?></div>
-                    <div class="job-desc-1">Position: Senior Developer</div>
-                    <div class="job-desc-2">Wage Range: 15jt - 20jt</div>
-                    <div class="job-desc-3">Location: Jakarta</div>
+                    <div class="job-desc-1">Major:<?php echo $_SESSION['major']; ?></div>
+                    <div class="job-desc-2">University:<?php echo $_SESSION['university']; ?></div>
+                    <div class="job-desc-3">Country code:<?php echo $_SESSION['countrycode']; ?></div>
                 </div>
 
                 <div class="profile job-suggestion content-box">
@@ -262,30 +319,20 @@ session_start();
                     </div>
                     <div class="job-content scroll">
                         <ol class="list-group list-group-flush">
-                            <a href="">
-                                <li class="list-group-item d-flex ">
-                                    <div class=" me-auto">
-                                        <div class="fw-bold">Job description 1</div>
-                                        More information
-                                    </div>
-                                </li>
-                            </a>
-                            <a href="">
-                                <li class="list-group-item d-flex ">
-                                    <div class=" me-auto">
-                                        <div class="fw-bold">Job description 2</div>
-                                        More information
-                                    </div>
-                                </li>
-                            </a>
-                            <a href="">
-                                <li class="list-group-item d-flex ">
-                                    <div class=" me-auto">
-                                        <div class="fw-bold">Job description 3</div>
-                                        More information
-                                    </div>
-                                </li>
-                            </a>
+                            <?php if (!empty($pending_jobs)) : ?>
+                                <?php foreach ($pending_jobs as $job) : ?>
+
+                                    <li class="list-group-item d-flex">
+                                        <div class="me-auto">
+                                            <div class="fw-bold">Job Name: <?php echo $job['job_name']; ?></div>
+                                            <div>Salary: Rp <?php echo $job['job_wage']; ?></div>
+                                        </div>
+                                    </li>
+
+                                <?php endforeach; ?>
+                            <?php else : ?>
+                                <p>No pending jobs available.</p>
+                            <?php endif; ?>
                         </ol>
                     </div>
                     <div class="title">
@@ -293,30 +340,22 @@ session_start();
                     </div>
                     <div class="job-content scroll">
                         <ol class="list-group list-group-flush">
-                            <a href="">
-                                <li class="list-group-item d-flex ">
-                                    <div class=" me-auto">
-                                        <div class="fw-bold">Job description 1</div>
-                                        More information
-                                    </div>
-                                </li>
-                            </a>
-                            <a href="">
-                                <li class="list-group-item d-flex ">
-                                    <div class=" me-auto">
-                                        <div class="fw-bold">Job description 2</div>
-                                        More information
-                                    </div>
-                                </li>
-                            </a>
-                            <a href="">
-                                <li class="list-group-item d-flex ">
-                                    <div class=" me-auto">
-                                        <div class="fw-bold">Job description 3</div>
-                                        More information
-                                    </div>
-                                </li>
-                            </a>
+
+                            <?php if (!empty($accepted_jobs)) : ?>
+                                <?php foreach ($accepted_jobs as $job) : ?>
+
+                                    <li class="list-group-item d-flex">
+                                        <div class="me-auto">
+                                            <div class="fw-bold">Job Name: <?php echo $job['job_name']; ?></div>
+                                            <div>Salary: <?php echo $job['job_wage']; ?></div>
+                                        </div>
+                                    </li>
+
+                                <?php endforeach; ?>
+                            <?php else : ?>
+                                <p>No accepted jobs available.</p>
+                            <?php endif; ?>
+
                         </ol>
                     </div>
                     <div class="title action-button">
