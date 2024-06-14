@@ -1,28 +1,35 @@
+<?php
+include_once('config.php');
+
+// Start employer session to check if it's active
+session_name('employer_session');
+session_start();
+$employer_logged_in = isset($_SESSION['email']);
+
+// Start jobseeker session to check if it's active
+session_name('jobseeker_session');
+session_start();
+$jobseeker_logged_in = isset($_SESSION['email']);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <title>Terms and Condition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <style>
-        .roboto-regular {
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
             font-family: "Roboto", sans-serif;
-            font-weight: 400;
-            font-style: normal;
-        }
-
-        .roboto-bold {
-            font-family: "Roboto", sans-serif;
-            font-weight: 700;
-            font-style: normal;
         }
 
         h1 {
-            font-size: 35;
-
+            font-size: 35px;
         }
 
         a {
@@ -35,96 +42,88 @@
         }
 
         .logo {
-            width: 40%;
+            max-width: 100%;
             height: auto;
         }
 
         .page {
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
-            /* align-items:center; */
             height: 100vh;
-
         }
 
         .box {
             width: 100%;
+            box-sizing: border-box;
         }
 
         .header {
             display: flex;
-            flex-direction: row;
-            justify-content: space-between;
             align-items: center;
+            padding: 10px 20px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #ddd;
+        }
 
+        .header img {
+            max-height: 50px;
         }
 
         .container {
             flex-grow: 1;
             background: linear-gradient(to bottom, white, #C0E4EC);
             display: flex;
-            flex-direction: row;
             justify-content: center;
-            align-items: end;
-
-        }
-
-        .container p {
-            padding-bottom: 20px;
+            align-items: flex-end;
+            padding: 20px;
         }
 
         .content {
             flex-grow: 2;
             display: flex;
-            flex-direction: row;
             justify-content: center;
-
+            padding: 20px;
         }
 
         .pad {
-            padding-top:30px;
+            padding-top: 30px;
             padding-bottom: 30px;
-            width:70%;
+            width: 100%;
+            max-width: 70%;
         }
 
         .footer {
-            margin-top: auto;
             display: flex;
-            flex-direction: row;
-            justify-content: baseline;
             align-items: center;
-            padding-left: 30px;
+            padding: 10px 20px;
             gap: 20px;
         }
 
         .footer span {
             font-weight: bold;
         }
-
-        .element {
-            margin-left: 50px;
-            margin-right: 50px;
-        }
     </style>
 </head>
-
 <body>
-    <div class="page roboto-regular">
+    <div class="page">
         <div class="box header">
-            <span class="element">
-                <img src="Joblook_text.jpg" class="logo">
+            <span>
+                <img src="Photos/Joblook_logo(textOnly).jpeg" class="logo">
             </span>
-            <span class="element">
-                <p id="log-in">
-                    <a href="log-in-page.php">Log in</a>
-                </p>
+            <span style="margin-left: auto;">
+                <?php
+                if ($employer_logged_in) {
+                    echo '<a href="dashboard-employer.php">&larr; Go Back</a>';
+                } elseif ($jobseeker_logged_in) {
+                    echo '<a href="dashboard-jobseeker.php">&larr; Go Back</a>';
+                } else {
+                    echo '<a href="log-in-page.php">Log in</a>';
+                }
+                ?>
             </span>
         </div>
         <div class="box container">
-            <p>
             <h1>Terms and Condition</h1>
-            </p>
         </div>
         <div class="box content">
             <div class="pad">
@@ -165,5 +164,4 @@
         </div>
     </div>
 </body>
-
 </html>

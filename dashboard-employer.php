@@ -150,7 +150,7 @@ $conn->close();
             display: flex;
             flex-direction: column;
             width: 32%;
-            max-height: 380px;
+            max-height: 410px;
             overflow-y: auto;
         }
 
@@ -167,7 +167,7 @@ $conn->close();
             width: 66%;
             display: flex;
             flex-direction: column;
-            max-height: 380px;
+            max-height: 410px;
             overflow-y: auto;
         }
 
@@ -205,6 +205,16 @@ $conn->close();
             margin-right: 15px;
             font-weight: bold;
         }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .action-buttons .btn-accept {
+            margin-right: 10px;
+        }
     </style>
 </head>
 
@@ -214,7 +224,7 @@ $conn->close();
         <div class="nav">
             <a href="dashboard-employer.php" class="btn btn-primary">Home</a>
             <a href="Create-job-post-page.php" class="btn btn-primary">Create Post</a>
-            <a href="Log-In-Page.php" class="btn btn-primary">Log out</a>
+            <a href="logout.php" class="btn btn-primary">Log out</a>
         </div>
     </div>
     <div class="content">
@@ -267,18 +277,20 @@ $conn->close();
                                                 <input type="hidden" name="jobpost_id" value="<?php echo $job['jobpost_id']; ?>">
                                                 <button type="submit" class="btn btn-primary">See Essay</button>
                                             </form>
-                                            <form action="update_applicant_status.php" method="post">
-                                                <input type="hidden" name="jobseeker_id" value="<?php echo $applicant['jobseeker_id']; ?>">
-                                                <input type="hidden" name="jobpost_id" value="<?php echo $job['jobpost_id']; ?>">
-                                                <input type="hidden" name="action" value="accept">
-                                                <button type="submit" class="btn btn-success ml-2">Accept</button>
-                                            </form>
-                                            <form action="update_applicant_status.php" method="post">
-                                                <input type="hidden" name="jobseeker_id" value="<?php echo $applicant['jobseeker_id']; ?>">
-                                                <input type="hidden" name="jobpost_id" value="<?php echo $job['jobpost_id']; ?>">
-                                                <input type="hidden" name="action" value="reject">
-                                                <button type="submit" class="btn btn-danger ml-2">Reject</button>
-                                            </form>
+                                            <div class="action-buttons">
+                                                <form action="update_applicant_status.php" method="post">
+                                                    <input type="hidden" name="jobseeker_id" value="<?php echo $applicant['jobseeker_id']; ?>">
+                                                    <input type="hidden" name="jobpost_id" value="<?php echo $job['jobpost_id']; ?>">
+                                                    <input type="hidden" name="action" value="accept">
+                                                    <button type="submit" class="btn btn-success btn-accept">Accept</button>
+                                                </form>
+                                                <form action="update_applicant_status.php" method="post">
+                                                    <input type="hidden" name="jobseeker_id" value="<?php echo $applicant['jobseeker_id']; ?>">
+                                                    <input type="hidden" name="jobpost_id" value="<?php echo $job['jobpost_id']; ?>">
+                                                    <input type="hidden" name="action" value="reject">
+                                                    <button type="submit" class="btn btn-danger btn-reject">Reject</button>
+                                                </form>
+                                            </div>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
@@ -292,11 +304,12 @@ $conn->close();
         </div>
     </div>
     <div class="footer">
-        <span>&copy; 2023 Joblook</span>
-        <span>About</span>
-        <span>Privacy</span>
-        <span>Terms</span>
-    </div>
+    <a href="others-page-1.php" style="color: inherit; text-decoration: none;"><span>Terms & Conditions</span></a>
+    <a href="others-page-2.php" style="color: inherit; text-decoration: none;"><span>Privacy</span></a>
+    <a href="others-page-3.php" style="color: inherit; text-decoration: none;"><span>About Us</span></a>
+    <a href="others-page-4.php" style="color: inherit; text-decoration: none;"><span>Contact Us</span></a>
+</div>
+
     <!-- jQuery and Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
