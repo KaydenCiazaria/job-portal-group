@@ -1,6 +1,11 @@
+<?php
+include_once('config.php');
+session_name('jobseeker_session');
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -154,15 +159,16 @@
         <div class="content-container">
             <div class="title">Application Information</div>
             <div class="content-box">
-                <div class="above-title">Tell us why you want this job?</div>
+                <div class="above-title">Tell us why you want this job? </div>
                 <div class="inner-box">
                     <textarea id="userInput" rows="6" cols="50" placeholder="Enter your text here..."></textarea>
                 </div>
                 <div class="below-title">Upload your documents here:</div>
                 <div>Email to:<span id="emailPlaceholder">[Placeholder]</span></div>
-                <div class="submit-button">
+                <div class="submit-button"> 
                     <button>Submit</button>
                 </div>
+                
             </div>
         </div>
     </div>
