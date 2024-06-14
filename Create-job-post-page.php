@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     $gender = isset($_POST['gender']) ? $_POST['gender'] : '';
     $company_logo_path = isset($_FILES['company_logo']['name']) ? $_FILES['company_logo']['name'] : '';
     $isactive = true;
-    $email = "bryanteffendi1234@gmail.com"; // revise this to become $email =$_session['email'], this is temporrary
+    $email = $_SESSION['email']; // revise this to become $email =$_session['email'], this is temporrary
 
     $sql = "INSERT INTO job_post (job_name, job_type, salary_wage, age, gender, company_logo, is_active) 
             VALUES (?, ?, ?, ?, ?, ?, ?)";
