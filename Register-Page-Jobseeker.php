@@ -1,259 +1,378 @@
 <?php
+include_once('config.php');
 session_name('jobseeker_session');
 session_start();
-include_once('config.php');
-if (isset($_POST["registerButton"])) {
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Retrieve data from the form
-        $firstname = isset($_POST['firstname']) ? $_POST['firstname'] : '';
-        $lastname = isset($_POST['lastname']) ? $_POST['lastname'] : '';
-        $fullname = $firstname . ' ' . $lastname;
 
-        $countrycode = isset($_POST['countrycode']) ? $_POST['countrycode'] : '';
-        $phonenumber = isset($_POST['phonenumber']) ? $_POST['phonenumber'] : '';
+// Prepare and execute the SQL query
+$jobseeker_email = $_SESSION['email'];
+$jobseeker_query = "SELECT jobseeker_id FROM jobseeker WHERE jobseeker_email = ?";
+if ($stmt = $conn->prepare($jobseeker_query)) {
+    $stmt->bind_param("s", $jobseeker_email);
+    $stmt->execute();
+    $stmt->bind_result($jobseeker_id);
+    $stmt->fetch();
+    $stmt->close();
+}
 
-        $day = isset($_POST['day']) ? $_POST['day'] : '';
-        $month = isset($_POST['month']) ? $_POST['month'] : '';
-        $year = isset($_POST['year']) ? $_POST['year'] : '';
-        $birthday = $year . "-" . $month . "-" . $day;
+$stmt = $conn->prepare(
+    "SELECT aj.jobpost_id, aj.jobseeker_id, jp.job_name, jp.salary_wage, aj.is_pending, aj.is_accepted, aj.is_rejected 
+     FROM apply_job aj
+     INNER JOIN job_post jp ON aj.jobpost_id = jp.jobpost_id
+     WHERE aj.jobseeker_id = ?"
+);
+$stmt->bind_param("i", $jobseeker_id);
 
-        $university = isset($_POST['university']) ? $_POST['university'] : '';
-        $degree = isset($_POST['degree']) ? $_POST['degree'] : '';
-        $major = isset($_POST['major']) ? $_POST['major'] : '';
+$stmt->execute();
+$stmt->store_result();
 
-        $email = isset($_POST['email']) ? $_POST['email'] : '';
-        $password = isset($_POST['password']) ? $_POST['password'] : '';
+// Check if any rows were returned
+if ($stmt->num_rows > 0) {
+    // Bind results to variables
+    $stmt->bind_result($jobpost_id, $jobseeker_id, $job_name, $salary_wage, $is_pending, $is_accepted, $is_rejected);
 
-        // Check if email already exists
-        $check_query = "SELECT * FROM jobseeker WHERE jobseeker_email='$email'";
-        $check_result = $conn->query($check_query);
+    // Arrays to hold jobs based on status
+    $accepted_jobs = [];
+    $pending_jobs = [];
 
-        if ($check_result->num_rows > 0) {
-            // Email already exists
-            echo "Email is already used by another user. Please choose another email to register.";
+    while ($stmt->fetch()) {
+        // Depending on the status, add job to appropriate array
+        if ($is_accepted == 1) {
+            $accepted_jobs[] = array(
+                'jobpost_id' => $jobpost_id,
+                'jobseeker_id' => $jobseeker_id,
+                'job_name' => $job_name,
+                'job_wage' => $salary_wage
+            );
+        } elseif ($is_pending == 1 && $is_rejected == 0) {
+            $pending_jobs[] = array(
+                'jobpost_id' => $jobpost_id,
+                'jobseeker_id' => $jobseeker_id,
+                'job_name' => $job_name,
+                'job_wage' => $salary_wage
+            );
         } else {
-            // Insert new jobseeker data into the database
-            $insert_query = "INSERT INTO jobseeker (jobseeker_fullname, jobseeker_countrycode, jobseeker_phonenumber, jobseeker_birthday, jobseeker_university, jobseeker_degree, jobseeker_major, jobseeker_email, jobseeker_password) VALUES ('$fullname', '$countrycode', '$phonenumber', '$birthday', '$university', '$degree', '$major', '$email', '$password')";
-            
-            if ($conn->query($insert_query) === TRUE) {
-                $_SESSION['fullname']= $fullname;
-                $_SESSION['countrycode']= $countrycode;
-                $_SESSION['phonenumber']= $phonenumber;
-                $_SESSION['email']= $email;
-                $_SESSION['password']= $password;
-                header("Location: dashboard-jobseeker.php");
-                exit();
-            } else {
-                echo "Error: " . $insert_query . "<br>" . $conn->error;
-            }
+            echo "No jobs available.";
         }
     }
 }
+$stmt->close();
+
 ?>
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<title>Gradient Background with Sticky Bottom Bar</title>
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-        background: linear-gradient(to bottom, white, #C0E4EC);
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-    }
-    .content-wrapper {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        flex: 1;
-    }
-    .content {
-        width: 100%;
-        max-width: 600px;
-        background-color: white;
-        padding: 25px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-top: 100px;
-        margin-bottom: 20px; /* Space between content box and "Already have an account" text */
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            position: relative;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, white, #C0E4EC);
+        }
 
-    .box {
-        position: relative;
-        width: 100%;
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-    }
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #ddd;
+        }
 
-    .box span {
-        width: 25%;
-        font-size: 14px;
-    }
+        .header img {
+            max-height: 50px;
+        }
 
-    .box .input-group {
-        width: 75%;
-        display: flex;
-    }
+        .header .nav {
+            margin-left: auto;
+        }
 
-    .box .input-group input, .box input[type="text"], .box input[type="email"], .box input[type="password"] {
-        width: 70%;
-        margin-left: 10px;
-        border: 1px solid #DDD7D7;
-        background: #DDD7D7;
-        outline: none;
-        padding: 10px;
-        border-radius: 5px;
-    }
+        .header .nav a {
+            margin-left: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+        }
 
-    .box .input-group input.small {
-        width: 30%;
-    }
+        /* .box {
+            background-color: red;
+            border: 5px solid black;
+        } */
 
-    .logo {
-        width: 120px;
-        height: 120px;
-        align-self: center;
-        margin-bottom: 30px;
-    }
+        .page {
+            height: 100vh;
+        }
 
-    .footer {
-        display: flex;
-        justify-content: flex-start;
-        width: 100%;
-        background-color: white;
-        color: black;
-        text-align: center;
-        padding: 10px 20px;
-    }
+        .content {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
 
-    .footer span {
-        margin-left: 10px;
-        margin-right: 15px;
-        font-weight: bold;
-    }
+        .content-box {
+            margin-bottom: 10px;
+            padding: 20px;
+            /* Adjust padding for content box */
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
 
-    .signup {
-        text-decoration: none;
-        color: #3498db;
-        cursor: pointer;
-    }
+        .content-box-right {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
 
-    .signup-text {
-        text-align: center;
-        margin-bottom: 5px;
-    }
+        .left {
+            width: 60%;
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+        }
 
-    .signup:hover {
-        text-decoration: underline;
-    }
+        .right {
+            width: 40%;
+        }
 
-    .register-button {
-    display: block; /* Change to block for centering */
-    width: 200px;
-    height: 40px;
-    margin: 20px auto 0 auto; /* Center horizontally and add top margin */
-    background-color: #DDD7D7;
-    color: black;
-    text-align: center;
-    border-radius: 5px;
-    cursor: pointer;
-    text-decoration: none;
-    line-height: 40px;
-    }
+        .profile {
+            flex: 1;
+            width: 80%;
+            text-align: center;
+        }
 
-    .register-button:hover {
-        background-color: #2980b9;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-    }
+        .job-container {
+            position: absolute;
+            width: 400px;
+            right: 30px;
+        }
 
-</style>
+        #jobpending-container {
+            top: 75px;
+        }
+
+        #jobaccepted-container {
+            bottom: 15px;
+            /* Adjust this value based on the height of #jobpending-container */
+        }
+
+        .title-container {
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        #jobpending,
+        #jobaccepted {
+            width: 100%;
+            height: 200px;
+            overflow-y: auto;
+        }
+
+        .job-suggestion {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        .suggest-content {
+            flex-grow: 1;
+            height: 100%
+        }
+
+        div.scroll {
+            margin: 4px, 4px;
+            padding: 4px;
+            overflow-x: hidden;
+            /* to create scrolling vertically */
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        .list {
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+            height: 100%;
+        }
+
+        .list-group-item {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            word-wrap: break-word;
+            /* Ensures text wraps within the item */
+        }
+
+        .job-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .job-desc-1,
+        .job-desc-2,
+        .job-desc-3 {
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .action-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .job-content {
+            flex: 1;
+            height: 50px;
+        }
+
+        .title {
+            text-align: center;
+            height: 50px;
+            background-color: lightblue;
+            border-radius: 5px;
+
+        }
+
+        .footer {
+            display: flex;
+            justify-content: flex-start;
+            width: 100%;
+            background-color: white;
+            color: black;
+            text-align: center;
+            margin-top: auto;
+            padding: 10px 20px;
+        }
+
+        .footer span {
+            margin-left: 10px;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+    </style>
 </head>
+
 <body>
+    <div class="page">
+        <div class="header">
+            <img src="Photos/Joblook_logo(textOnly).jpeg" alt="Logo">
+            <div class="nav">
+                <a href="home.php" class="btn btn-primary">Home</a>
+                <a href="Apply-Job-Post.php" class="btn btn-primary">Create Post</a>
+                <a href="Log-In-Page.html" class="btn btn-primary">Log out</a>
+            </div>
+        </div>
+        <div class="content">
 
-<div class="content-wrapper">
-    <div class="content">
-        <img src="Joblook_logo.jpeg" alt="Logo" class="logo">
+            <div class="left">
+                <div class="profile content-box">
+                    <h1>Profile</h1>
+                    <div class="job-title"><?php echo $_SESSION['fullname']; ?></div>
+                    <div class="job-desc-1">Major:<?php echo $_SESSION['major']; ?></div>
+                    <div class="job-desc-2">University:<?php echo $_SESSION['university']; ?></div>
+                    <div class="job-desc-3">Country code:<?php echo $_SESSION['countrycode']; ?></div>
+                </div>
 
-        <form method="post">
-            <div class="box">
-                <span>Name:</span>
-                <div class="input-group">
-                    <input type="text" name="firstname" placeholder="First Name">
-                    <input type="text" name="lastname" placeholder="Last Name" style="margin-left: 10px;">
+                <div class="profile job-suggestion content-box">
+                    <div class="suggest-content">
+                        <ul class="list-group list-group-horizontal-md">
+                            <li class="list-group-item ">
+                                <div class="job-title">Job 1</div>
+                                <div class="job-desc-1">Position: Junior Developer</div>
+                                <div class="job-desc-2">Wage range: 7.5jt - 10jt</div>
+                                <div class="job-desc-3">Location: Tangerang</div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="job-title">Job 2</div>
+                                <div class="job-desc-1">Position: Junior Developer
+                                    <div class="job-desc-2">Wage range: 7.5jt - 10jt
+                                        <div class="job-desc-3">Location: Tangerang
+                            </li>
+                            <li class="list-group-item">
+                                <div class="job-title">Job 3</div>
+                                <div class="job-desc-1">Position: Junior Developer</div>
+                                <div class="job-desc-2">Wage range: 7.5jt - 10jt</div>
+                                <div class="job-desc-3">Location: Tangerang</div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
+            <div class="right">
+                <div class="content-box-right list content-box-r" id="jobpending-container">
+                    <div class="title">
+                        <h1>Pending(?)</h1>
+                    </div>
+                    <div class="job-content scroll">
+                        <ol class="list-group list-group-flush">
+                        <?php if (!empty($pending_jobs)) : ?>
+                                <?php foreach ($pending_jobs as $job) : ?>
+                                    
+                                        <li class="list-group-item d-flex">
+                                            <div class="me-auto">
+                                                <div class="fw-bold">Job Name: <?php echo $job['job_name']; ?></div>
+                                                <div>Salary: Rp <?php echo $job['job_wage']; ?></div>
+                                            </div>
+                                        </li>
+                                    
+                                <?php endforeach; ?>
+                            <?php else : ?>
+                                <p>No pending jobs available.</p>
+                            <?php endif; ?>
+                        </ol>
+                    </div>
+                    <div class="title">
+                        <h1>Accepted(?)</h1>
+                    </div>
+                    <div class="job-content scroll">
+                        <ol class="list-group list-group-flush">
 
-            <div class="box">
-                <span>Phone:</span>
-                <div class="input-group">
-                    <input type="text" name="countrycode" placeholder="Country Code" class="small">
-                    <input type="text" name="phonenumber" placeholder="Phone Number" style="width: 65%; margin-left: 10px;">
+                            <?php if (!empty($accepted_jobs)) : ?>
+                                <?php foreach ($accepted_jobs as $job) : ?>
+                                    
+                                        <li class="list-group-item d-flex">
+                                            <div class="me-auto">
+                                                <div class="fw-bold">Job Name: <?php echo $job['job_name']; ?></div>
+                                                <div>Salary: <?php echo $job['job_wage']; ?></div>
+                                            </div>
+                                        </li>
+                                    
+                                <?php endforeach; ?>
+                            <?php else : ?>
+                                <p>No accepted jobs available.</p>
+                            <?php endif; ?>
+                            
+                        </ol>
+                    </div>
+                    <div class="title action-button">
+                        <button class="btn btn-primary">Search for more</button>
+                    </div>
                 </div>
-            </div>
 
-            <div class="box">
-                <span>Birthday:</span>
-                <div class="input-group">
-                    <input type="text" name="day" placeholder="Day" class="small">
-                    <input type="text" name="month" placeholder="Month" class="small" style="margin-left: 10px;">
-                    <input type="text" name="year" placeholder="Year" class="small" style="margin-left: 10px;">
-                </div>
-            </div>
 
-            <div class="box">
-                <span>University:</span>
-                <input type="text" name="university" placeholder="University">
             </div>
-
-            <div class="box">
-                <span>Degree:</span>
-                <input type="text" name="degree" placeholder="Degree">
-            </div>
-
-            <div class="box">
-                <span>Major:</span>
-                <input type="text" name="major" placeholder="Major">
-            </div>
-
-            <div class="box">
-                <span>Email:</span>
-                <input type="email" name="email" placeholder="Email">
-            </div>
-            
-            <div class="box">
-                <span>Password:</span>
-                <input type="password" name="password" placeholder="Password">
-            </div>
-
-            <button type="submit"name="registerButton" id="registerButton" class="register-button">
-                Register Me
-            </button>
-        </form>
+        </div>
+        <div class="footer">
+            <span>Terms & Conditions</span>
+            <span>Privacy</span>
+            <span>About Us</span>
+            <span>Contact Us</span>
+        </div>
     </div>
-
-    <p class="signup-text">Already have an account? <a href="Log-In-Page.html" id="loginButton" class="signup">Log In</a></p>
-</div>
-
-<div class="footer">
-    <span>Terms & Conditions</span>
-    <span>Privacy</span>
-    <span>About Us</span>
-    <span>Contact Us</span>
-</div>
 </body>
+
 </html>
