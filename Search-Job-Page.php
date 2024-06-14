@@ -2,16 +2,17 @@
 session_name('jobseeker_session');
 session_start();
 include_once('config.php');
+require_once('config.php');
 
 // Read from database
 if (isset($_POST["search-button"])) {
     // When search-button is clicked
     $search_input = $_POST["search-job"];
-    $stmt = $conn->prepare("SELECT jobpost_id, job_name, job_type, salary_wage, age, gender, is_active FROM job_post WHERE is_active = 1 AND job_name = ?");
+    $stmt = $conn->prepare("SELECT jobpost_id, job_name, job_type, salary_wage, age, gender, is_active,company_logo FROM job_post WHERE is_active = 1 AND job_name = ?");
     $stmt->bind_param("s", $search_input);
 } else {
     // When search-button is not clicked
-    $stmt = $conn->prepare("SELECT jobpost_id, job_name, job_type, salary_wage, age, gender, is_active FROM job_post WHERE is_active = 1");
+    $stmt = $conn->prepare("SELECT jobpost_id, job_name, job_type, salary_wage, age, gender, is_active,company_logo FROM job_post WHERE is_active = 1");
 }
 
 $stmt->execute();
@@ -20,7 +21,7 @@ $stmt->store_result();
 // Check if any rows were returned
 if ($stmt->num_rows > 0) {
     // Bind results to variables
-    $stmt->bind_result($jobpost_id, $job_name, $job_type, $salary_wage, $age, $gender, $is_active);
+    $stmt->bind_result($jobpost_id, $job_name, $job_type, $salary_wage, $age, $gender, $is_active,$company_logo);
     
     $job_post_result = [];
     while ($stmt->fetch()) {
@@ -31,7 +32,8 @@ if ($stmt->num_rows > 0) {
             'salary_wage' => $salary_wage,
             'age' => $age,
             'gender' => $gender,
-            'is_active' => $is_active
+            'is_active' => $is_active,
+            'company_logo'=> $company_logo
         );
     }
 }else {
@@ -215,7 +217,7 @@ if (mysqli_close($conn)) {
     <div class="job-listings">
         <?php foreach ($job_post_result as $job) : ?>
             <div class="job-listing">
-                <!-- Image here -->
+            <img src="<?php echo $job['company_logo']; ?>" alt="Image">
                 <div class="job-details">
                     <div><strong>JOB NAME:</strong> <?= $job['job_name'] ?></div>
                     <div><strong>LOCATION:</strong> <?= $job['job_type'] ?></div>
