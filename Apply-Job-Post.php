@@ -2,7 +2,41 @@
 include_once('config.php');
 session_name('jobseeker_session');
 session_start();
+if (isset($_POST['submit-button'])) {
+$essay_input = isset($_POST['essay']) ? $_POST['essay'] : '';
+$jobpost_id = $_SESSION['selected_jobpost_id'];
+$jobseeker_email = $_SESSION['email'];
+
+$jobseeker_query = "SELECT jobseeker_id FROM jobseeker WHERE jobseeker_email = ?";
+$stmt = $conn->prepare($jobseeker_query);
+$stmt->bind_param("s", $jobseeker_email);
+$stmt->execute();
+$jobseeker_result = $stmt->get_result();
+$jobseeker = $jobseeker_result->fetch_assoc();
+$jobseeker_id = $jobseeker['jobseeker_id'];
+
+$essay_input = isset($_POST['essay']) ? $_POST['essay'] : '';
+$is_pending = 1; // true
+$is_accepted = 0; // false
+$is_rejected = 0; // false
+
+$sql = "INSERT INTO apply_job (jobpost_id, jobseeker_id, essay, is_pending, is_accepted, is_rejected) 
+VALUES (?, ?, ?, ?, ?, ?)";
+
+if ($stmt = $conn->prepare($sql)) {
+    $stmt->bind_param("iisiii", $jobpost_id, $jobseeker_id, $essay_input, $is_pending, $is_accepted, $is_rejected);
+
+    if ($stmt->execute()) {
+        echo "New job application created successfully.";
+    } else {
+        echo "Error: " . $stmt->error;
+    }
+} else {
+    echo "Error: " . $conn->error;
+}
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -157,17 +191,20 @@ session_start();
     </div>
     <div class="content">
         <div class="content-container">
-            <div class="title">Application Information</div>
+            <div class="title">Application information</div>
             <div class="content-box">
                 <div class="above-title">Tell us why you want this job? </div>
-                <div class="inner-box">
-                    <textarea id="userInput" rows="6" cols="50" placeholder="Enter your text here..."></textarea>
-                </div>
+                <form method="post">
+                    <div class="inner-box">
+                        <textarea id="userInput" name="essay" rows="6" cols="50" placeholder="Enter your text here..."></textarea>
+                    </div>
                 <div class="below-title">Upload your documents here:</div>
                 <div>Email to:<span id="emailPlaceholder">[Placeholder]</span></div>
+                <form method="post">
                 <div class="submit-button"> 
-                    <button>Submit</button>
+                    <button type="submit"name="submit-button">Submit</button>
                 </div>
+                </form>
                 
             </div>
         </div>
