@@ -359,7 +359,9 @@ $stmt->close();
                         </ol>
                     </div>
                     <div class="title action-button">
+                        <a href="Search-Job-Page.php">
                         <button class="btn btn-primary">Search for more</button>
+                        </a>
                     </div>
                 </div>
 
