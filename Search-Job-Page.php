@@ -1,53 +1,52 @@
 <?php
-session_name('job_seeker_session');
+session_name('jobseeker_session');
 session_start();
 include_once('config.php');
 
 // Read from database
-$sql = "SELECT jobpost_id, job_name, job_type, salary_wage, age, gender, is_active FROM job_post WHERE is_active = 1";
-$result = mysqli_query($conn, $sql);
+if (isset($_POST["search-button"])) {
+    // When search-button is clicked
+    $search_input = $_POST["search-job"];
+    $stmt = $conn->prepare("SELECT jobpost_id, job_name, job_type, salary_wage, age, gender, is_active FROM job_post WHERE is_active = 1 AND job_name = ?");
+    $stmt->bind_param("s", $search_input);
+} else {
+    // When search-button is not clicked
+    $stmt = $conn->prepare("SELECT jobpost_id, job_name, job_type, salary_wage, age, gender, is_active FROM job_post WHERE is_active = 1");
+}
 
-// If result is more than 0
-if (mysqli_num_rows($result) > 0)
-{
-    while ($row = mysqli_fetch_assoc($result)) {
-        // Store an array with job details
-        $job_post[$row["jobpost_id"]] = array(
-            'job_name' => $row["job_name"],
-            'job_type' => $row["job_type"],
-            'salary_wage' => $row["salary_wage"],
-            'age' => $row["age"],
-            'gender' => $row["gender"],
-            'is_active' => $row["is_active"]
-            // Add more key-value pairs for additional data as needed
+$stmt->execute();
+$stmt->store_result();
+
+// Check if any rows were returned
+if ($stmt->num_rows > 0) {
+    // Bind results to variables
+    $stmt->bind_result($jobpost_id, $job_name, $job_type, $salary_wage, $age, $gender, $is_active);
+    
+    $job_post_result = [];
+    while ($stmt->fetch()) {
+        $job_post_result[] = array(
+            'jobpost_id' => $jobpost_id,
+            'job_name' => $job_name,
+            'job_type' => $job_type,
+            'salary_wage' => $salary_wage,
+            'age' => $age,
+            'gender' => $gender,
+            'is_active' => $is_active
         );
     }
-    
-}
-else
-{
-    echo "0 results";
+}else {
+    echo "No jobs available.";
 }
 
 #Close connection
-if (mysqli_close($conn)){
+if (mysqli_close($conn)) {
     // echo "Connection closed";
 };
-
-// Placeholder for fetching job data from the database
-$jobs = [
-    ['company' => 'BCA', 'location' => 'Jakarta', 'salary' => '$1000', 'age' => '25-30', 'gender' => 'Any', 'type' => 'Full-time'],
-    ['company' => 'Mandiri', 'location' => 'Jakarta', 'salary' => '$1200', 'age' => '22-28', 'gender' => 'Male', 'type' => 'Part-time'],
-    ['company' => 'Pepsi', 'location' => 'Bandung', 'salary' => '$1100', 'age' => '23-29', 'gender' => 'Female', 'type' => 'Full-time'],
-    ['company' => 'McDonald\'s', 'location' => 'Surabaya', 'salary' => '$900', 'age' => '18-25', 'gender' => 'Any', 'type' => 'Full-time'],
-];
-
-// $job_post = ['jobpost_id' => '0', 'job_name' => 'IT-developer', 'job_type' => 'Full time', 'salary_wage' => '7500000.00', 'age' => '30', 'gender' => 'both', 'is_active' => '1',]
-
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -63,7 +62,8 @@ $jobs = [
             font-family: Arial, sans-serif;
             background: linear-gradient(to bottom, white, #C0E4EC);
             height: 100vh;
-            overflow: hidden; /* Prevent scrolling */
+            overflow: hidden;
+            /* Prevent scrolling */
             display: flex;
             flex-direction: column;
         }
@@ -78,7 +78,8 @@ $jobs = [
             width: 100%;
             top: 0;
             z-index: 1000;
-            padding-right: 40px; /* Added padding to the right */
+            padding-right: 40px;
+            /* Added padding to the right */
         }
 
         .header img {
@@ -88,7 +89,8 @@ $jobs = [
         .header .nav {
             margin-left: auto;
             display: flex;
-            justify-content: flex-end; /* Align items to the left of the available space */
+            justify-content: flex-end;
+            /* Align items to the left of the available space */
             padding-right: 40px;
         }
 
@@ -104,7 +106,8 @@ $jobs = [
         }
 
         .search-container {
-            margin-top: 80px; /* Adjusted margin to account for fixed header */
+            margin-top: 80px;
+            /* Adjusted margin to account for fixed header */
             width: 100%;
             display: flex;
             justify-content: center;
@@ -112,11 +115,13 @@ $jobs = [
         }
 
         .search-container input[type="text"] {
-            width: 400px; /* Increased width */
+            width: 400px;
+            /* Increased width */
             padding: 10px;
             border: 1px solid #DDD7D7;
             border-radius: 5px;
-            margin-right: 10px; /* Added margin to create space between input and button */
+            margin-right: 10px;
+            /* Added margin to create space between input and button */
         }
 
         .search-container button {
@@ -134,9 +139,12 @@ $jobs = [
             width: 100%;
             max-width: 800px;
             margin: 0 auto;
-            margin-bottom: 60px; /* Added margin to prevent content from touching the footer */
-            height: calc(100vh - 220px); /* Adjusted height to account for header and footer */
-            background: white; /* Match the background color of the content area */
+            margin-bottom: 60px;
+            /* Added margin to prevent content from touching the footer */
+            height: calc(100vh - 220px);
+            /* Adjusted height to account for header and footer */
+            background: white;
+            /* Match the background color of the content area */
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
@@ -174,7 +182,8 @@ $jobs = [
             text-align: center;
             position: fixed;
             bottom: 0;
-            padding: 10px; /* Reduced padding to make the footer smaller */
+            padding: 10px;
+            /* Reduced padding to make the footer smaller */
             font-size: 1em;
         }
 
@@ -185,6 +194,7 @@ $jobs = [
         }
     </style>
 </head>
+
 <body>
     <div class="header">
         <img src="Photos/Joblook_logo(textOnly).jpeg" alt="Logo">
@@ -196,12 +206,14 @@ $jobs = [
     </div>
 
     <div class="search-container">
-        <input type="text" placeholder="Search for a Job...">
-        <button>SEARCH</button>
+        <form action="search-job-page.php" method="post">
+            <input type="text" placeholder="Search for a Job..." name="search-job" required>
+            <button type="submit" name="search-button">SEARCH</button>
+        </form>
     </div>
 
     <div class="job-listings">
-        <?php foreach ($job_post as $job): ?>
+        <?php foreach ($job_post_result as $job) : ?>
             <div class="job-listing">
                 <!-- Image here -->
                 <div class="job-details">
@@ -213,7 +225,7 @@ $jobs = [
                     <div><strong>Type:</strong> <?= $job['is_active'] ?></div>
                 </div>
                 <form action="set-session.php" method="post">
-                    <input type="hidden" name="job_id" value="<?= $row['jobpost_id'] ?>">
+                    <input type="hidden" name="job_id" value="<?= $job['jobpost_id'] ?>">
                     <button type="submit" class="btn btn-primary">Apply to <?php echo $job['job_name']; ?></button>
                 </form>
             </div>
@@ -227,4 +239,5 @@ $jobs = [
         <span>Contact Us</span>
     </div>
 </body>
+
 </html>
