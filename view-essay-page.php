@@ -1,3 +1,32 @@
+<?php
+include_once('config.php');
+session_name('employer_session');
+session_start();
+
+// Check if the jobseeker_id is set in the session
+if (isset($_SESSION['jobseeker_id'])) {
+    $jobseeker_id = $_SESSION['jobseeker_id'];
+
+    // Fetch the essay and jobseeker's name from the database
+    $query = "SELECT j.jobseeker_fullname, a.essay 
+              FROM apply_job a
+              JOIN jobseeker j ON a.jobseeker_id = j.jobseeker_id
+              WHERE a.jobseeker_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $jobseeker_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $applicant = $result->fetch_assoc();
+
+    $stmt->close();
+    $conn->close();
+} else {
+    // If no jobseeker_id is found in the session, redirect to the employer dashboard
+    header("Location: employer_dashboard.php");
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -128,21 +157,16 @@
         <div class="content-container">
             <div class="title">Applicant's Essay</div>
             <div class="content-box">
-                <?php
-                // Placeholder data until database integration
-                $jobseeker = [
-                    ['id' => 1, 'Name' => 'Bryant Effendi']
-                ];
-
-                // Selecting a random job post for demonstration
-                $applicantsEssay = $jobseeker[array_rand($jobseeker)];
-                ?>
-                <div class="above-title">Name: <?php echo $applicantsEssay['Name']; ?></div>
-                <div class="inner-box">
-                    <div class="essay-content">
-                        This is where the applicant's essay content would go. You can replace this text with dynamic content from a database later.
+                <?php if (isset($applicant)): ?>
+                    <div class="above-title">Name: <?php echo htmlspecialchars($applicant['jobseeker_fullname']); ?></div>
+                    <div class="inner-box">
+                        <div class="essay-content">
+                            <?php echo nl2br(htmlspecialchars($applicant['essay'])); ?>
+                        </div>
                     </div>
-                </div>
+                <?php else: ?>
+                    <p>No essay found for this applicant.</p>
+                <?php endif; ?>
             </div>
         </div>
     </div>
