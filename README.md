@@ -1,5 +1,7 @@
 Job Portal Website
+
 Overview
+
 Welcome to our Job Portal Website, a platform designed to connect job seekers with employers seamlessly. This project marks our first venture into web development, built using PHP with a monolithic architecture (combined backend and frontend). The website provides a user-friendly interface for job postings, applications, and employer dashboards, making it a one-stop solution for recruitment needs.
 
 Key Features
